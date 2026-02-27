@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operational KPI Scorecard — Q4 2024</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080C15;
+    --surface: #0F1520;
+    --surface-alt: #171F2E;
+    --border: rgba(255,255,255,0.05);
+    --text: #E2E8F0;
+    --text-muted: #64748B;
+    --accent: #F59E0B;
+    --accent-light: #FBBF24;
+    --accent-glow: rgba(245,158,11,0.12);
+    --green: #10B981;
+    --green-bg: rgba(16,185,129,0.1);
+    --red: #EF4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --amber: #F59E0B;
+    --amber-bg: rgba(245,158,11,0.1);
+    --cyan: #06B6D4;
+    --cyan-bg: rgba(6,182,212,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif;
+    line-height: 1.6; min-height: 100vh;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+  .report-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+  }
+
+  .report-header h1 {
+    font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+    letter-spacing: -0.5px; color: #fff;
+  }
+
+  .report-meta { text-align: right; font-size: 13px; color: var(--text-muted); }
+
+  .report-meta .badge {
+    display: inline-block; background: var(--accent-glow); color: var(--accent-light);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-bottom: 8px;
+  }
+
+  .exec-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 36px;
+  }
+
+  .exec-summary h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent-light); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .exec-summary p { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;
+  }
+
+  .kpi-card .kpi-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 10px; font-weight: 500;
+  }
+
+  .kpi-card .kpi-value {
+    font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+  }
+
+  .kpi-card .kpi-sub { font-size: 12px; color: var(--text-muted); }
+
+  .kpi-change {
+    font-size: 12px; font-weight: 500; display: inline-flex; align-items: center;
+    gap: 4px; padding: 2px 8px; border-radius: 6px;
+  }
+
+  .kpi-change.up { color: var(--green); background: var(--green-bg); }
+  .kpi-change.down { color: var(--red); background: var(--red-bg); }
+  .kpi-change.neutral { color: var(--amber); background: var(--amber-bg); }
+
+  .section { margin-bottom: 36px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600;
+    color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    background: var(--surface-alt); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); font-weight: 500; padding: 13px 16px; text-align: left;
+  }
+
+  thead th:not(:first-child) { text-align: right; }
+
+  tbody td { padding: 13px 16px; font-size: 13px; border-top: 1px solid var(--border); }
+
+  tbody td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+
+  tbody tr:hover { background: rgba(245,158,11,0.02); }
+
+  .row-highlight { font-weight: 700; color: #fff; background: var(--surface-alt); }
+  .row-highlight td { border-top: 2px solid var(--border); }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+
+  .status-pill {
+    display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.6px; padding: 3px 10px; border-radius: 10px;
+  }
+
+  .status-on-track { background: var(--green-bg); color: var(--green); }
+  .status-at-risk { background: var(--amber-bg); color: var(--amber); }
+  .status-behind { background: var(--red-bg); color: var(--red); }
+
+  .gauge-cell { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+
+  .gauge-track {
+    width: 70px; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;
+  }
+
+  .gauge-fill { height: 100%; border-radius: 3px; }
+  .gauge-fill.high { background: linear-gradient(90deg, var(--green), #6EE7B7); }
+  .gauge-fill.mid { background: linear-gradient(90deg, var(--amber), #FCD34D); }
+  .gauge-fill.low { background: linear-gradient(90deg, var(--red), #FCA5A5); }
+
+  .dept-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.6px; padding: 2px 8px; border-radius: 4px;
+  }
+
+  .dept-eng { background: rgba(99,102,241,0.12); color: #818CF8; }
+  .dept-sales { background: rgba(16,185,129,0.12); color: #34D399; }
+  .dept-ops { background: rgba(245,158,11,0.12); color: #FBBF24; }
+  .dept-cs { background: rgba(6,182,212,0.12); color: #22D3EE; }
+  .dept-mktg { background: rgba(236,72,153,0.12); color: #F472B6; }
+  .dept-fin { background: rgba(139,92,246,0.12); color: #A78BFA; }
+  .dept-hr { background: rgba(251,146,60,0.12); color: #FB923C; }
+
+  .dual-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .insight-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px;
+  }
+
+  .insight-card h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--accent-light); margin-bottom: 14px; font-weight: 500;
+  }
+
+  .insight-item {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+
+  .insight-item:last-child { border-bottom: none; }
+  .insight-item .label { color: var(--text-muted); }
+  .insight-item .val { font-weight: 600; color: var(--text); }
+
+  .tri-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 24px; text-align: center;
+  }
+
+  .stat-card .stat-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 8px; font-weight: 500;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700;
+    color: #fff; margin-bottom: 4px;
+  }
+
+  .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); }
+
+  .report-footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .footer-author { font-weight: 500; color: var(--text); }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    html, body { background: var(--bg) !important; color: var(--text) !important; }
+    .page { padding: 24px 32px; max-width: 100%; }
+
+    .kpi-card, .table-wrap, .insight-card, .exec-summary, .stat-card {
+      background: var(--surface) !important; border-color: var(--border) !important;
+    }
+
+    .kpi-card .kpi-value, .stat-card .stat-value, .section-title, .report-header h1 { color: #fff !important; }
+
+    thead th { background: var(--surface-alt) !important; color: var(--text-muted) !important; }
+    .row-highlight { background: var(--surface-alt) !important; color: #fff !important; }
+
+    .gauge-track { background: rgba(255,255,255,0.05) !important; }
+    .gauge-fill.high { background: linear-gradient(90deg, var(--green), #6EE7B7) !important; }
+    .gauge-fill.mid { background: linear-gradient(90deg, var(--amber), #FCD34D) !important; }
+    .gauge-fill.low { background: linear-gradient(90deg, var(--red), #FCA5A5) !important; }
+
+    .status-on-track { background: var(--green-bg) !important; color: var(--green) !important; }
+    .status-at-risk { background: var(--amber-bg) !important; color: var(--amber) !important; }
+    .status-behind { background: var(--red-bg) !important; color: var(--red) !important; }
+
+    .dept-eng { background: rgba(99,102,241,0.12) !important; color: #818CF8 !important; }
+    .dept-sales { background: rgba(16,185,129,0.12) !important; color: #34D399 !important; }
+    .dept-ops { background: rgba(245,158,11,0.12) !important; color: #FBBF24 !important; }
+    .dept-cs { background: rgba(6,182,212,0.12) !important; color: #22D3EE !important; }
+    .dept-mktg { background: rgba(236,72,153,0.12) !important; color: #F472B6 !important; }
+    .dept-fin { background: rgba(139,92,246,0.12) !important; color: #A78BFA !important; }
+    .dept-hr { background: rgba(251,146,60,0.12) !important; color: #FB923C !important; }
+
+    .kpi-change.up { background: var(--green-bg) !important; color: var(--green) !important; }
+    .kpi-change.down { background: var(--red-bg) !important; color: var(--red) !important; }
+    .kpi-change.neutral { background: var(--amber-bg) !important; color: var(--amber) !important; }
+    .report-meta .badge { background: var(--accent-glow) !important; color: var(--accent-light) !important; }
+
+    .positive { color: var(--green) !important; }
+    .negative { color: var(--red) !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="report-header">
+    <h1>Operational KPI Scorecard — Q4 2024</h1>
+    <div class="report-meta">
+      <div class="badge">Internal Use Only</div>
+      <div>Prepared: January 8, 2025</div>
+      <div>Period: Oct 1 — Dec 31, 2024</div>
+    </div>
+  </div>
+
+  <div class="exec-summary">
+    <h2>Executive Summary</h2>
+    <p>
+      Cross-departmental operational performance in Q4 2024 delivered mixed results. Overall efficiency ratio reached 0.69, a modest improvement from 0.65 in Q4 2023, with Engineering and Finance leading the gains. SLA compliance averaged 96.6% company-wide, meeting the 95% floor but leaving room for improvement. Cost per unit stood at $47.60, down 8.4% year-over-year as early automation initiatives took effect. Revenue per employee reached $354K, reflecting solid but uneven growth across departments. Three departments flagged at-risk status, with Customer Success and HR requiring focused intervention in Q1 2025.
+    </p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Efficiency Ratio</div>
+      <div class="kpi-value">0.69</div>
+      <span class="kpi-change up">▲ 6.2% YoY</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Cost Per Unit</div>
+      <div class="kpi-value">$47.60</div>
+      <span class="kpi-change up">▼ 8.4% YoY</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Revenue / Employee</div>
+      <div class="kpi-value">$354K</div>
+      <span class="kpi-change up">▲ 12.1% YoY</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">SLA Compliance</div>
+      <div class="kpi-value">96.6%</div>
+      <span class="kpi-change up">▲ 0.8pp YoY</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Company-Wide Operational Metrics</div>
+    <div class="tri-col">
+      <div class="stat-card">
+        <div class="stat-label">Total Headcount</div>
+        <div class="stat-value">396</div>
+        <div class="stat-sub">vs 372 Q4 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Utilization Rate</div>
+        <div class="stat-value">82.1%</div>
+        <div class="stat-sub">vs 79.4% Q4 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Output / FTE</div>
+        <div class="stat-value">124 units</div>
+        <div class="stat-sub">vs 112 units Q4 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Attrition Rate</div>
+        <div class="stat-value">6.2%</div>
+        <div class="stat-sub">vs 7.8% Q4 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">OPEX / Revenue</div>
+        <div class="stat-value">36.0%</div>
+        <div class="stat-sub">vs 39.2% Q4 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Incident Rate</div>
+        <div class="stat-value">0.28%</div>
+        <div class="stat-sub">vs 0.41% Q4 2023</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Department Scorecard</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Headcount</th>
+            <th>Efficiency Ratio</th>
+            <th>Cost / Unit</th>
+            <th>Rev / Employee</th>
+            <th>SLA Compliance</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dept-tag dept-eng">Engineering</span></td>
+            <td>128</td>
+            <td class="positive">0.76</td>
+            <td>$42.80</td>
+            <td>$424,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill high" style="width:98%"></div></div>
+                98.4%
+              </div>
+            </td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-sales">Sales</span></td>
+            <td>78</td>
+            <td class="positive">0.72</td>
+            <td>$48.60</td>
+            <td>$561,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill high" style="width:97%"></div></div>
+                97.2%
+              </div>
+            </td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-ops">Operations</span></td>
+            <td>62</td>
+            <td>0.70</td>
+            <td>$41.20</td>
+            <td>$278,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill high" style="width:97%"></div></div>
+                97.4%
+              </div>
+            </td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-cs">Customer Success</span></td>
+            <td>44</td>
+            <td>0.61</td>
+            <td>$58.40</td>
+            <td>$248,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill mid" style="width:92%"></div></div>
+                92.6%
+              </div>
+            </td>
+            <td><span class="status-pill status-at-risk">At Risk</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-mktg">Marketing</span></td>
+            <td>36</td>
+            <td>0.62</td>
+            <td>$54.20</td>
+            <td>$298,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill mid" style="width:93%"></div></div>
+                93.8%
+              </div>
+            </td>
+            <td><span class="status-pill status-at-risk">At Risk</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-fin">Finance</span></td>
+            <td>28</td>
+            <td class="positive">0.74</td>
+            <td>$38.60</td>
+            <td>$316,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill high" style="width:98%"></div></div>
+                98.8%
+              </div>
+            </td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-hr">HR & People</span></td>
+            <td>20</td>
+            <td>0.64</td>
+            <td>$46.80</td>
+            <td>$232,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill mid" style="width:94%"></div></div>
+                94.2%
+              </div>
+            </td>
+            <td><span class="status-pill status-at-risk">At Risk</span></td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Company Average</td>
+            <td>396</td>
+            <td>0.69</td>
+            <td>$47.60</td>
+            <td>$354,000</td>
+            <td>
+              <div class="gauge-cell">
+                <div class="gauge-track"><div class="gauge-fill high" style="width:97%"></div></div>
+                96.6%
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">SLA Performance by Category</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>SLA Category</th>
+            <th>Target</th>
+            <th>Actual</th>
+            <th>Variance</th>
+            <th>Incidents</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Platform Uptime</td>
+            <td>99.95%</td>
+            <td class="positive">99.96%</td>
+            <td class="positive">+0.01pp</td>
+            <td>5</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>API Response Time (p99)</td>
+            <td>&lt;200ms</td>
+            <td class="positive">178ms</td>
+            <td class="positive">−22ms</td>
+            <td>3</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>Ticket First Response</td>
+            <td>&lt;2h</td>
+            <td>1.8h</td>
+            <td class="positive">−0.2h</td>
+            <td>32</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>Ticket Resolution</td>
+            <td>&lt;24h</td>
+            <td>22.4h</td>
+            <td class="positive">−1.6h</td>
+            <td>14</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>Deploy Frequency</td>
+            <td>&gt;20/month</td>
+            <td class="positive">26/month</td>
+            <td class="positive">+6</td>
+            <td>2</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>Invoice Processing</td>
+            <td>&lt;48h</td>
+            <td>44h</td>
+            <td class="positive">−4h</td>
+            <td>6</td>
+            <td><span class="status-pill status-on-track">On Track</span></td>
+          </tr>
+          <tr>
+            <td>Onboarding Completion</td>
+            <td>&lt;14 days</td>
+            <td>18.8 days</td>
+            <td class="negative">+4.8 days</td>
+            <td>22</td>
+            <td><span class="status-pill status-behind">Behind</span></td>
+          </tr>
+          <tr>
+            <td>Customer NPS Response</td>
+            <td>&lt;24h</td>
+            <td>34.2h</td>
+            <td class="negative">+10.2h</td>
+            <td>16</td>
+            <td><span class="status-pill status-behind">Behind</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Headcount Productivity & Cost Analysis</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Q4 2024 FTE</th>
+            <th>Q4 2023 FTE</th>
+            <th>Output / FTE</th>
+            <th>Cost / FTE</th>
+            <th>Productivity Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dept-tag dept-eng">Engineering</span></td>
+            <td>128</td>
+            <td>118</td>
+            <td>142 units</td>
+            <td>$152,400</td>
+            <td class="positive">+14.2%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-sales">Sales</span></td>
+            <td>78</td>
+            <td>72</td>
+            <td>$561K rev</td>
+            <td>$168,200</td>
+            <td class="positive">+16.8%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-ops">Operations</span></td>
+            <td>62</td>
+            <td>60</td>
+            <td>178 units</td>
+            <td>$122,800</td>
+            <td class="positive">+11.2%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-cs">Customer Success</span></td>
+            <td>44</td>
+            <td>42</td>
+            <td>72 tickets</td>
+            <td>$128,600</td>
+            <td>+4.8%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-mktg">Marketing</span></td>
+            <td>36</td>
+            <td>34</td>
+            <td>$298K rev</td>
+            <td>$142,800</td>
+            <td>+6.1%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-fin">Finance</span></td>
+            <td>28</td>
+            <td>28</td>
+            <td>267 txns</td>
+            <td>$138,400</td>
+            <td class="positive">+12.6%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-hr">HR & People</span></td>
+            <td>20</td>
+            <td>18</td>
+            <td>17.4 FTE</td>
+            <td>$116,200</td>
+            <td>+8.6%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Company Total</td>
+            <td>396</td>
+            <td>372</td>
+            <td>124 avg</td>
+            <td>$138,600</td>
+            <td class="positive">+10.7%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Quarterly Trend</div>
+    <div class="dual-col">
+      <div class="insight-card">
+        <h3>Efficiency Ratio by Quarter</h3>
+        <div class="insight-item">
+          <span class="label">Q1 2024</span>
+          <span class="val">0.63</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2024</span>
+          <span class="val">0.65</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q3 2024</span>
+          <span class="val">0.67</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q4 2024</span>
+          <span class="val positive">0.69</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Full Year Avg</span>
+          <span class="val">0.66</span>
+        </div>
+      </div>
+      <div class="insight-card">
+        <h3>Cost Per Unit by Quarter</h3>
+        <div class="insight-item">
+          <span class="label">Q1 2024</span>
+          <span class="val">$54.20</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2024</span>
+          <span class="val">$51.80</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q3 2024</span>
+          <span class="val">$49.40</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q4 2024</span>
+          <span class="val positive">$47.60</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Full Year Avg</span>
+          <span class="val">$50.75</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-footer">
+    <div class="footer-author">Writed by Michele Piazzoli</div>
+    <div>Internal operational report. Not for external distribution. All figures in USD.</div>
+  </div>
+
+</div>
+</body>
+</html>
