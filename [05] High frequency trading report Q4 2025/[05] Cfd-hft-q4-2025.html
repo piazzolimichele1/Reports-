@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Capital Quantitative Division — Q4 2025 Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06090F;
+    --surface: #0D1117;
+    --surface-alt: #151C28;
+    --border: rgba(255,255,255,0.05);
+    --text: #E2E8F0;
+    --text-muted: #64748B;
+    --accent: #10B981;
+    --accent-light: #34D399;
+    --accent-glow: rgba(16,185,129,0.12);
+    --green: #10B981;
+    --green-bg: rgba(16,185,129,0.1);
+    --red: #EF4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --gold: #F59E0B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+  .report-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+  }
+
+  .report-header h1 {
+    font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+    letter-spacing: -0.5px; color: #fff;
+  }
+
+  .report-meta { text-align: right; font-size: 13px; color: var(--text-muted); }
+
+  .report-meta .badge {
+    display: inline-block; background: var(--accent-glow); color: var(--accent-light);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-bottom: 8px;
+  }
+
+  .hft-tag {
+    display: inline-block; background: rgba(239,68,68,0.1); color: #F87171;
+    padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; margin-right: 6px;
+  }
+
+  .exec-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 36px;
+  }
+
+  .exec-summary h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent-light); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .exec-summary p { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;
+  }
+
+  .kpi-card .kpi-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 10px; font-weight: 500;
+  }
+
+  .kpi-card .kpi-value {
+    font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+  }
+
+  .kpi-card .kpi-sub { font-size: 12px; color: var(--text-muted); }
+
+  .kpi-change {
+    font-size: 12px; font-weight: 500; display: inline-flex; align-items: center;
+    gap: 4px; padding: 2px 8px; border-radius: 6px;
+  }
+
+  .kpi-change.up { color: var(--green); background: var(--green-bg); }
+  .kpi-change.down { color: var(--red); background: var(--red-bg); }
+
+  .section { margin-bottom: 36px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600;
+    color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .tri-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 24px; text-align: center;
+  }
+
+  .stat-card .stat-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 8px; font-weight: 500;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700;
+    color: #fff; margin-bottom: 4px;
+  }
+
+  .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); }
+
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    background: var(--surface-alt); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); font-weight: 500; padding: 13px 14px; text-align: left;
+  }
+
+  thead th:not(:first-child):not(:nth-child(2)) { text-align: right; }
+
+  tbody td {
+    padding: 12px 14px; font-size: 13px; border-top: 1px solid var(--border);
+  }
+
+  tbody td:not(:first-child):not(:nth-child(2)) {
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+
+  tbody tr:hover { background: rgba(16,185,129,0.02); }
+
+  .row-highlight { font-weight: 700; color: #fff; background: var(--surface-alt); }
+  .row-highlight td { border-top: 2px solid var(--border); }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+
+  .algo-name { display: flex; align-items: center; gap: 8px; }
+
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.active { background: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.4); }
+  .status-dot.paused { background: var(--gold); box-shadow: 0 0 6px rgba(245,158,11,0.3); }
+  .status-dot.stopped { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.3); }
+
+  .asset-name { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+  .profit-bar-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+
+  .profit-bar-track {
+    width: 60px; height: 5px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden;
+  }
+
+  .profit-bar-fill { height: 100%; border-radius: 3px; }
+  .profit-bar-fill.pos { background: linear-gradient(90deg, var(--green), #6EE7B7); }
+  .profit-bar-fill.neg { background: linear-gradient(90deg, var(--red), #FCA5A5); }
+
+  .monthly-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px;
+  }
+
+  .month-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .month-row:last-child { margin-bottom: 0; }
+
+  .month-label { width: 90px; font-size: 13px; color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+
+  .month-bar-track {
+    flex: 1; height: 34px; background: var(--surface-alt); border-radius: 6px; overflow: hidden;
+  }
+
+  .month-bar-fill {
+    height: 100%; border-radius: 6px; background: linear-gradient(90deg, #059669, var(--accent-light));
+    display: flex; align-items: center; justify-content: flex-end; padding-right: 14px;
+    font-size: 12px; font-weight: 700; color: #fff; min-width: 80px;
+  }
+
+  .month-amount {
+    width: 100px; text-align: right; font-size: 14px; font-weight: 600; color: var(--text); flex-shrink: 0;
+  }
+
+  .alloc-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px;
+  }
+
+  .alloc-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .alloc-row:last-child { margin-bottom: 0; }
+
+  .alloc-label { width: 100px; font-size: 13px; color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+
+  .alloc-track { flex: 1; height: 28px; background: var(--surface-alt); border-radius: 6px; overflow: hidden; }
+
+  .alloc-fill {
+    height: 100%; border-radius: 6px; display: flex; align-items: center;
+    justify-content: flex-end; padding-right: 12px; font-size: 11px; font-weight: 700;
+    color: #fff; min-width: 50px;
+  }
+
+  .alloc-fill.fx { background: linear-gradient(90deg, #6366F1, #818CF8); }
+  .alloc-fill.index { background: linear-gradient(90deg, #0891B2, #22D3EE); }
+  .alloc-fill.commodity { background: linear-gradient(90deg, #D97706, #FBBF24); }
+  .alloc-fill.crypto { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+
+  .alloc-val { width: 110px; text-align: right; font-size: 13px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+
+  /* BREAKDOWN TABLE */
+  .breakdown-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+
+  .breakdown-wrap table thead th { text-align: left; }
+  .breakdown-wrap table thead th:nth-child(2),
+  .breakdown-wrap table thead th:nth-child(3),
+  .breakdown-wrap table thead th:nth-child(4) { text-align: right; }
+
+  .breakdown-wrap table tbody td:nth-child(2),
+  .breakdown-wrap table tbody td:nth-child(3),
+  .breakdown-wrap table tbody td:nth-child(4) { text-align: right; }
+
+  .breakdown-wrap table tbody td:first-child {
+    color: var(--text-muted); font-weight: 500;
+  }
+
+  .algo-ref {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .report-footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .footer-author { font-weight: 500; color: var(--text); }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    html, body { background: var(--bg) !important; color: var(--text) !important; }
+    .page { padding: 24px 32px; max-width: 100%; }
+
+    .kpi-card, .table-wrap, .exec-summary, .stat-card,
+    .monthly-wrap, .alloc-wrap, .breakdown-wrap {
+      background: var(--surface) !important; border-color: var(--border) !important;
+    }
+
+    .kpi-card .kpi-value, .stat-card .stat-value, .section-title, .report-header h1 { color: #fff !important; }
+
+    thead th { background: var(--surface-alt) !important; color: var(--text-muted) !important; }
+    .row-highlight { background: var(--surface-alt) !important; color: #fff !important; }
+
+    .month-bar-track, .alloc-track { background: var(--surface-alt) !important; }
+    .month-bar-fill { background: linear-gradient(90deg, #059669, var(--accent-light)) !important; }
+
+    .alloc-fill.fx { background: linear-gradient(90deg, #6366F1, #818CF8) !important; }
+    .alloc-fill.index { background: linear-gradient(90deg, #0891B2, #22D3EE) !important; }
+    .alloc-fill.commodity { background: linear-gradient(90deg, #D97706, #FBBF24) !important; }
+    .alloc-fill.crypto { background: linear-gradient(90deg, #7C3AED, #A78BFA) !important; }
+
+    .profit-bar-track { background: rgba(255,255,255,0.04) !important; }
+    .profit-bar-fill.pos { background: linear-gradient(90deg, var(--green), #6EE7B7) !important; }
+    .profit-bar-fill.neg { background: linear-gradient(90deg, var(--red), #FCA5A5) !important; }
+
+    .status-dot.active { background: var(--green) !important; }
+    .status-dot.paused { background: var(--gold) !important; }
+    .status-dot.stopped { background: var(--red) !important; }
+
+    .kpi-change.up { background: var(--green-bg) !important; color: var(--green) !important; }
+    .kpi-change.down { background: var(--red-bg) !important; color: var(--red) !important; }
+    .report-meta .badge { background: var(--accent-glow) !important; color: var(--accent-light) !important; }
+    .hft-tag { background: rgba(239,68,68,0.1) !important; color: #F87171 !important; }
+
+    .positive { color: var(--green) !important; }
+    .negative { color: var(--red) !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="report-header">
+    <h1>Apex Capital Quantitative Division — Q4 2025 Report</h1>
+    <div class="report-meta">
+      <div><span class="hft-tag">High Frequency Trading</span><span class="badge">Strictly Confidential</span></div>
+      <div>Prepared: January 12, 2026</div>
+      <div>Period: Oct 1 — Dec 31, 2025</div>
+    </div>
+  </div>
+
+  <div class="exec-summary">
+    <h2>Executive Summary</h2>
+    <p>
+      The high-frequency trading desk generated $1.47B in net P&L across 15 active CFD algorithms in Q4 2025, representing a 31.4% return on allocated capital of $4.68B. Total trade volume reached 2.84M executions with a blended win rate of 64.7%. Maximum portfolio drawdown was contained at 4.2%, well within the 8% risk threshold. Sharpe ratio for the quarter stood at 3.41, with 13 of 15 strategies delivering positive returns. FX momentum and equity index mean-reversion strategies led performance, while gold volatility harvesting provided consistent low-correlation returns.
+    </p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Net P&L</div>
+      <div class="kpi-value">$1.47B</div>
+      <span class="kpi-change up">▲ 31.4% ROC</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Trades</div>
+      <div class="kpi-value">2.84M</div>
+      <div class="kpi-sub">Avg 30,869 / day</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Win Rate</div>
+      <div class="kpi-value">64.7%</div>
+      <span class="kpi-change up">▲ 2.3pp YoY</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Sharpe Ratio</div>
+      <div class="kpi-value">3.41</div>
+      <div class="kpi-sub">vs 2.98 Q4 2024</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Risk & Performance Metrics</div>
+    <div class="tri-col">
+      <div class="stat-card">
+        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-value">−4.2%</div>
+        <div class="stat-sub">Threshold: 8.0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sortino Ratio</div>
+        <div class="stat-value">5.18</div>
+        <div class="stat-sub">vs 4.42 Q4 2024</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Calmar Ratio</div>
+        <div class="stat-value">7.48</div>
+        <div class="stat-sub">vs 5.91 Q4 2024</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Profit Factor</div>
+        <div class="stat-value">2.84</div>
+        <div class="stat-sub">vs 2.51 Q4 2024</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Allocated Capital</div>
+        <div class="stat-value">$4.68B</div>
+        <div class="stat-sub">Utilization: 87.3%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Gross Exposure</div>
+        <div class="stat-value">$12.84B</div>
+        <div class="stat-sub">Leverage: 2.74x</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algorithm Performance — Q4 2025</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Asset</th>
+            <th>Trades</th>
+            <th>Win Rate</th>
+            <th>Net P&L</th>
+            <th>Sharpe</th>
+            <th>Profit Factor</th>
+            <th>P&L Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>VORTEX-FX1</div></td>
+            <td><span class="asset-name">EURUSD</span></td>
+            <td>312,400</td>
+            <td class="positive">68.4%</td>
+            <td class="positive">$218,600,000</td>
+            <td>4.12</td>
+            <td>3.24</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:100%"></div></div>14.9%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>APEX-IDX3</div></td>
+            <td><span class="asset-name">NASDAQ</span></td>
+            <td>245,800</td>
+            <td class="positive">66.1%</td>
+            <td class="positive">$194,200,000</td>
+            <td>3.88</td>
+            <td>2.97</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:89%"></div></div>13.2%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>TITAN-MR7</div></td>
+            <td><span class="asset-name">SP500</span></td>
+            <td>198,600</td>
+            <td class="positive">71.2%</td>
+            <td class="positive">$172,400,000</td>
+            <td>3.94</td>
+            <td>3.18</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:79%"></div></div>11.7%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>DRIFT-FX4</div></td>
+            <td><span class="asset-name">GBPUSD</span></td>
+            <td>287,100</td>
+            <td class="positive">63.8%</td>
+            <td class="positive">$156,800,000</td>
+            <td>3.52</td>
+            <td>2.86</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:72%"></div></div>10.7%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>PULSE-AU2</div></td>
+            <td><span class="asset-name">XAUUSD</span></td>
+            <td>156,300</td>
+            <td class="positive">67.5%</td>
+            <td class="positive">$138,400,000</td>
+            <td>3.61</td>
+            <td>3.04</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:63%"></div></div>9.4%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>NOVA-CR1</div></td>
+            <td><span class="asset-name">BTCUSD</span></td>
+            <td>342,700</td>
+            <td>59.2%</td>
+            <td class="positive">$124,100,000</td>
+            <td>2.87</td>
+            <td>2.41</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:57%"></div></div>8.4%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>ECHO-DJ5</div></td>
+            <td><span class="asset-name">US30</span></td>
+            <td>189,400</td>
+            <td class="positive">65.3%</td>
+            <td class="positive">$98,200,000</td>
+            <td>3.38</td>
+            <td>2.78</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:45%"></div></div>6.7%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>SURGE-FX8</div></td>
+            <td><span class="asset-name">EURCAD</span></td>
+            <td>224,500</td>
+            <td class="positive">62.4%</td>
+            <td class="positive">$87,600,000</td>
+            <td>3.14</td>
+            <td>2.62</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:40%"></div></div>6.0%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>ZENITH-NK6</div></td>
+            <td><span class="asset-name">NIKKEI 225</span></td>
+            <td>167,200</td>
+            <td class="positive">64.7%</td>
+            <td class="positive">$76,300,000</td>
+            <td>3.22</td>
+            <td>2.71</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:35%"></div></div>5.2%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>FLUX-JP9</div></td>
+            <td><span class="asset-name">JP225</span></td>
+            <td>134,800</td>
+            <td class="positive">63.1%</td>
+            <td class="positive">$62,400,000</td>
+            <td>3.02</td>
+            <td>2.58</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:29%"></div></div>4.2%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>HELIX-BT4</div></td>
+            <td><span class="asset-name">BTCUSD</span></td>
+            <td>278,300</td>
+            <td>57.8%</td>
+            <td class="positive">$54,800,000</td>
+            <td>2.44</td>
+            <td>2.18</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:25%"></div></div>3.7%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>PRISM-AU2</div></td>
+            <td><span class="asset-name">XAUUSD</span></td>
+            <td>112,600</td>
+            <td class="positive">72.1%</td>
+            <td class="positive">$48,200,000</td>
+            <td>4.52</td>
+            <td>3.41</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:22%"></div></div>3.3%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot active"></span>STORM-EC11</div></td>
+            <td><span class="asset-name">EURCAD</span></td>
+            <td>196,400</td>
+            <td>60.1%</td>
+            <td class="positive">$38,600,000</td>
+            <td>2.76</td>
+            <td>2.32</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:18%"></div></div>2.6%</div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot paused"></span>ORBIT-NQ6</div></td>
+            <td><span class="asset-name">NASDAQ</span></td>
+            <td>78,200</td>
+            <td>55.4%</td>
+            <td class="negative">−$8,400,000</td>
+            <td>−0.41</td>
+            <td class="negative">0.82</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill neg" style="width:12%"></div></div><span class="negative">−0.6%</span></div></td>
+          </tr>
+          <tr>
+            <td><div class="algo-name"><span class="status-dot stopped"></span>GHOST-GB7</div></td>
+            <td><span class="asset-name">GBPUSD</span></td>
+            <td>56,100</td>
+            <td>48.6%</td>
+            <td class="negative">−$16,200,000</td>
+            <td>−1.12</td>
+            <td class="negative">0.64</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill neg" style="width:22%"></div></div><span class="negative">−1.1%</span></div></td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Portfolio Total</td>
+            <td></td>
+            <td>2,840,400</td>
+            <td>64.7%</td>
+            <td class="positive">$1,446,000,000</td>
+            <td>3.41</td>
+            <td>2.84</td>
+            <td><div class="profit-bar-cell"><div class="profit-bar-track"><div class="profit-bar-fill pos" style="width:100%"></div></div>100%</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Monthly Net P&L Breakdown</div>
+    <div class="monthly-wrap">
+      <div class="month-row">
+        <div class="month-label">October</div>
+        <div class="month-bar-track">
+          <div class="month-bar-fill" style="width:72%">$412.8M</div>
+        </div>
+        <div class="month-amount">28.6%</div>
+      </div>
+      <div class="month-row">
+        <div class="month-label">November</div>
+        <div class="month-bar-track">
+          <div class="month-bar-fill" style="width:100%">$578.4M</div>
+        </div>
+        <div class="month-amount">40.0%</div>
+      </div>
+      <div class="month-row">
+        <div class="month-label">December</div>
+        <div class="month-bar-track">
+          <div class="month-bar-fill" style="width:79%">$454.8M</div>
+        </div>
+        <div class="month-amount">31.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">P&L Contribution by Asset Class</div>
+    <div class="alloc-wrap">
+      <div class="alloc-row">
+        <div class="alloc-label">FX Pairs</div>
+        <div class="alloc-track">
+          <div class="alloc-fill fx" style="width:70%">$501.6M</div>
+        </div>
+        <div class="alloc-val">34.7%</div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">Indices</div>
+        <div class="alloc-track">
+          <div class="alloc-fill index" style="width:58%">$603.5M</div>
+        </div>
+        <div class="alloc-val">41.7%</div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">Gold</div>
+        <div class="alloc-track">
+          <div class="alloc-fill commodity" style="width:26%">$186.6M</div>
+        </div>
+        <div class="alloc-val">12.9%</div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">Crypto</div>
+        <div class="alloc-track">
+          <div class="alloc-fill crypto" style="width:22%">$178.9M</div>
+        </div>
+        <div class="alloc-val">12.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO BREAKDOWN -->
+  <div class="section">
+    <div class="section-title">Portfolio Statistical Breakdown</div>
+    <div class="breakdown-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Best</th>
+            <th>Lowest</th>
+            <th>Average</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Number of Trades</td>
+            <td class="positive">342,700<span class="algo-ref">NOVA-CR1</span></td>
+            <td>56,100<span class="algo-ref">GHOST-GB7</span></td>
+            <td>189,360</td>
+          </tr>
+          <tr>
+            <td>Win Rate</td>
+            <td class="positive">72.1%<span class="algo-ref">PRISM-AU2</span></td>
+            <td>48.6%<span class="algo-ref">GHOST-GB7</span></td>
+            <td>63.0%</td>
+          </tr>
+          <tr>
+            <td>Net P&L</td>
+            <td class="positive">$218,600,000<span class="algo-ref">VORTEX-FX1</span></td>
+            <td class="negative">−$16,200,000<span class="algo-ref">GHOST-GB7</span></td>
+            <td class="positive">$96,400,000</td>
+          </tr>
+          <tr>
+            <td>Sharpe Ratio</td>
+            <td class="positive">4.52<span class="algo-ref">PRISM-AU2</span></td>
+            <td class="negative">−1.12<span class="algo-ref">GHOST-GB7</span></td>
+            <td>2.92</td>
+          </tr>
+          <tr>
+            <td>Profit Factor</td>
+            <td class="positive">3.41<span class="algo-ref">PRISM-AU2</span></td>
+            <td class="negative">0.64<span class="algo-ref">GHOST-GB7</span></td>
+            <td>2.45</td>
+          </tr>
+          <tr>
+            <td>P&L Weight on Total Return</td>
+            <td class="positive">14.9%<span class="algo-ref">VORTEX-FX1</span></td>
+            <td class="negative">−1.1%<span class="algo-ref">GHOST-GB7</span></td>
+            <td>6.7%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="report-footer">
+    <div class="footer-author">Writed by Michele Piazzoli</div>
+    <div>This report contains proprietary trading data. Distribution strictly prohibited. All figures in USD.</div>
+  </div>
+
+</div>
+</body>
+</html>
