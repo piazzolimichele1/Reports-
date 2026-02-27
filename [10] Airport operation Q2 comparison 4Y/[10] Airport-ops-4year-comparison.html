@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skygate International Airport — Q2 Four-Year Comparison (2022–2025)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060A12;
+    --surface: #0C1220;
+    --surface-alt: #141C2E;
+    --border: rgba(255,255,255,0.05);
+    --text: #E2E8F0;
+    --text-muted: #64748B;
+    --accent: #38BDF8;
+    --accent-light: #7DD3FC;
+    --accent-glow: rgba(56,189,248,0.12);
+    --green: #10B981;
+    --green-bg: rgba(16,185,129,0.1);
+    --red: #EF4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --amber: #F59E0B;
+    --y2022: #94A3B8;
+    --y2023: #A78BFA;
+    --y2024: #38BDF8;
+    --y2025: #10B981;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif;
+    line-height: 1.6; min-height: 100vh;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+  .report-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+  }
+
+  .report-header h1 {
+    font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700;
+    letter-spacing: -0.5px; color: #fff;
+  }
+
+  .report-meta { text-align: right; font-size: 13px; color: var(--text-muted); }
+
+  .report-meta .badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500; margin-bottom: 8px;
+  }
+
+  .badge-conf { background: var(--accent-glow); color: var(--accent-light); }
+
+  .exec-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 36px;
+  }
+
+  .exec-summary h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent-light); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .exec-summary p { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+
+  .section { margin-bottom: 36px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600;
+    color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    background: var(--surface-alt); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); font-weight: 500; padding: 13px 14px; text-align: left;
+  }
+
+  thead th:not(:first-child) { text-align: right; }
+
+  tbody td { padding: 13px 14px; font-size: 13px; border-top: 1px solid var(--border); }
+  tbody td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:hover { background: rgba(56,189,248,0.02); }
+
+  .row-highlight { font-weight: 700; color: #fff; background: var(--surface-alt); }
+  .row-highlight td { border-top: 2px solid var(--border); }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+
+  /* YEAR TAGS */
+  .year-tag {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+    padding: 2px 10px; border-radius: 4px;
+  }
+
+  .y22 { background: rgba(148,163,184,0.12); color: #94A3B8; }
+  .y23 { background: rgba(167,139,250,0.12); color: #A78BFA; }
+  .y24 { background: rgba(56,189,248,0.12); color: #7DD3FC; }
+  .y25 { background: rgba(16,185,129,0.12); color: #34D399; }
+
+  /* MULTI BAR */
+  .multi-bar-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px;
+  }
+
+  .multi-bar-group { margin-bottom: 24px; }
+  .multi-bar-group:last-child { margin-bottom: 0; }
+
+  .multi-bar-title {
+    font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px;
+  }
+
+  .multi-bar-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 5px;
+  }
+
+  .multi-bar-year {
+    width: 50px; font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+
+  .my22 { color: var(--y2022); }
+  .my23 { color: var(--y2023); }
+  .my24 { color: var(--y2024); }
+  .my25 { color: var(--y2025); }
+
+  .multi-bar-track {
+    flex: 1; height: 20px; background: var(--surface-alt); border-radius: 4px; overflow: hidden;
+  }
+
+  .multi-bar-fill {
+    height: 100%; border-radius: 4px; display: flex; align-items: center;
+    justify-content: flex-end; padding-right: 8px; font-size: 10px; font-weight: 700;
+    color: #fff; min-width: 50px;
+  }
+
+  .mf22 { background: linear-gradient(90deg, #64748B, #94A3B8); opacity: 0.7; }
+  .mf23 { background: linear-gradient(90deg, #7C3AED, #A78BFA); opacity: 0.8; }
+  .mf24 { background: linear-gradient(90deg, #0284C7, #38BDF8); opacity: 0.9; }
+  .mf25 { background: linear-gradient(90deg, #059669, #10B981); }
+
+  .multi-bar-val {
+    width: 80px; text-align: right; font-size: 12px; font-weight: 600; color: var(--text); flex-shrink: 0;
+  }
+
+  .bar-legend {
+    display: flex; gap: 20px; margin-top: 20px; font-size: 12px; color: var(--text-muted);
+  }
+
+  .legend-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+    margin-right: 6px; vertical-align: middle;
+  }
+
+  .dual-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .insight-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px;
+  }
+
+  .insight-card h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--accent-light); margin-bottom: 14px; font-weight: 500;
+  }
+
+  .insight-item {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+
+  .insight-item:last-child { border-bottom: none; }
+  .insight-item .label { color: var(--text-muted); }
+  .insight-item .val { font-weight: 600; color: var(--text); }
+
+  .report-footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .footer-author { font-weight: 500; color: var(--text); }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    html, body { background: var(--bg) !important; color: var(--text) !important; }
+    .page { padding: 24px 32px; max-width: 100%; }
+
+    .table-wrap, .insight-card, .exec-summary, .multi-bar-wrap {
+      background: var(--surface) !important; border-color: var(--border) !important;
+    }
+
+    .section-title, .report-header h1 { color: #fff !important; }
+
+    thead th { background: var(--surface-alt) !important; color: var(--text-muted) !important; }
+    .row-highlight { background: var(--surface-alt) !important; color: #fff !important; }
+
+    .multi-bar-track { background: var(--surface-alt) !important; }
+    .mf22 { background: linear-gradient(90deg, #64748B, #94A3B8) !important; }
+    .mf23 { background: linear-gradient(90deg, #7C3AED, #A78BFA) !important; }
+    .mf24 { background: linear-gradient(90deg, #0284C7, #38BDF8) !important; }
+    .mf25 { background: linear-gradient(90deg, #059669, #10B981) !important; }
+
+    .y22 { background: rgba(148,163,184,0.12) !important; color: #94A3B8 !important; }
+    .y23 { background: rgba(167,139,250,0.12) !important; color: #A78BFA !important; }
+    .y24 { background: rgba(56,189,248,0.12) !important; color: #7DD3FC !important; }
+    .y25 { background: rgba(16,185,129,0.12) !important; color: #34D399 !important; }
+
+    .badge-conf { background: var(--accent-glow) !important; color: var(--accent-light) !important; }
+
+    .positive { color: var(--green) !important; }
+    .negative { color: var(--red) !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="report-header">
+    <h1>Skygate International Airport — Q2 Four-Year Comparison (2022–2025)</h1>
+    <div class="report-meta">
+      <div class="badge badge-conf">Confidential</div>
+      <div>Prepared: July 8, 2025</div>
+      <div>Comparative: Q2 2022 → Q2 2025</div>
+    </div>
+  </div>
+
+  <div class="exec-summary">
+    <h2>Executive Summary</h2>
+    <p>
+      This report presents a four-year comparative analysis of Q2 operational performance at Skygate International Airport. Q2 2025 represents the strongest quarter on record, with total passengers reaching 14.82M — a 56.4% increase from Q2 2022's 9.48M. Aircraft movements grew from 72,400 to 98,640 over the same period, a 36.2% expansion. On-time performance improved steadily from 81.2% to 87.4%, reflecting cumulative investments in ground operations, ATC coordination, and predictive scheduling. Cargo volume rose from 142,600t to 186,400t, with 2025 marking the first quarter above 180,000t. Revenue per passenger increased from $14.20 to $18.40, driven by terminal modernization and expanded commercial offerings.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Core Metrics — Q2 Year-over-Year</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th><span class="year-tag y22">Q2 2022</span></th>
+            <th><span class="year-tag y23">Q2 2023</span></th>
+            <th><span class="year-tag y24">Q2 2024</span></th>
+            <th><span class="year-tag y25">Q2 2025</span></th>
+            <th>4-Year Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Passengers</td>
+            <td>9,480,000</td>
+            <td>11,260,000</td>
+            <td>13,140,000</td>
+            <td class="positive">14,820,000</td>
+            <td class="positive">+56.3%</td>
+          </tr>
+          <tr>
+            <td>Aircraft Movements</td>
+            <td>72,400</td>
+            <td>81,200</td>
+            <td>91,000</td>
+            <td class="positive">98,640</td>
+            <td class="positive">+36.2%</td>
+          </tr>
+          <tr>
+            <td>Total Departures</td>
+            <td>36,200</td>
+            <td>40,600</td>
+            <td>45,500</td>
+            <td class="positive">49,320</td>
+            <td class="positive">+36.2%</td>
+          </tr>
+          <tr>
+            <td>Total Arrivals</td>
+            <td>36,200</td>
+            <td>40,600</td>
+            <td>45,500</td>
+            <td class="positive">49,320</td>
+            <td class="positive">+36.2%</td>
+          </tr>
+          <tr>
+            <td>On-Time Departure %</td>
+            <td>81.2%</td>
+            <td>83.6%</td>
+            <td>85.3%</td>
+            <td class="positive">87.4%</td>
+            <td class="positive">+6.2pp</td>
+          </tr>
+          <tr>
+            <td>Avg Load Factor</td>
+            <td>82.4%</td>
+            <td>85.1%</td>
+            <td>87.4%</td>
+            <td class="positive">89.2%</td>
+            <td class="positive">+6.8pp</td>
+          </tr>
+          <tr>
+            <td>Cargo Volume (t)</td>
+            <td>142,600</td>
+            <td>156,200</td>
+            <td>170,100</td>
+            <td class="positive">186,400</td>
+            <td class="positive">+30.7%</td>
+          </tr>
+          <tr>
+            <td>Avg Turnaround (min)</td>
+            <td>56</td>
+            <td>52</td>
+            <td>48</td>
+            <td class="positive">42</td>
+            <td class="positive">−25.0%</td>
+          </tr>
+          <tr>
+            <td>Delayed Flights %</td>
+            <td>18.8%</td>
+            <td>16.4%</td>
+            <td>14.7%</td>
+            <td class="positive">12.6%</td>
+            <td class="positive">−6.2pp</td>
+          </tr>
+          <tr>
+            <td>Baggage Mishandle (per 1000)</td>
+            <td>4.2</td>
+            <td>3.4</td>
+            <td>2.4</td>
+            <td class="positive">1.8</td>
+            <td class="positive">−57.1%</td>
+          </tr>
+          <tr>
+            <td>Security Queue Avg (min)</td>
+            <td>16.8</td>
+            <td>14.2</td>
+            <td>11.4</td>
+            <td class="positive">8.2</td>
+            <td class="positive">−51.2%</td>
+          </tr>
+          <tr>
+            <td>Passenger Satisfaction</td>
+            <td>3.8 / 5</td>
+            <td>4.0 / 5</td>
+            <td>4.3 / 5</td>
+            <td class="positive">4.6 / 5</td>
+            <td class="positive">+21.1%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Passenger Volume — Visual Comparison</div>
+    <div class="multi-bar-wrap">
+      <div class="multi-bar-group">
+        <div class="multi-bar-title">Total Passengers (Q2)</div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my22">2022</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf22" style="width:64%">9.48M</div></div>
+          <div class="multi-bar-val">9,480,000</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my23">2023</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf23" style="width:76%">11.26M</div></div>
+          <div class="multi-bar-val">11,260,000</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my24">2024</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf24" style="width:89%">13.14M</div></div>
+          <div class="multi-bar-val">13,140,000</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my25">2025</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf25" style="width:100%">14.82M</div></div>
+          <div class="multi-bar-val">14,820,000</div>
+        </div>
+      </div>
+      <div class="multi-bar-group">
+        <div class="multi-bar-title">Aircraft Movements (Q2)</div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my22">2022</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf22" style="width:73%">72,400</div></div>
+          <div class="multi-bar-val">72,400</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my23">2023</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf23" style="width:82%">81,200</div></div>
+          <div class="multi-bar-val">81,200</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my24">2024</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf24" style="width:92%">91,000</div></div>
+          <div class="multi-bar-val">91,000</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my25">2025</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf25" style="width:100%">98,640</div></div>
+          <div class="multi-bar-val">98,640</div>
+        </div>
+      </div>
+      <div class="multi-bar-group">
+        <div class="multi-bar-title">Cargo Volume — Metric Tons (Q2)</div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my22">2022</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf22" style="width:77%">142,600</div></div>
+          <div class="multi-bar-val">142,600 t</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my23">2023</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf23" style="width:84%">156,200</div></div>
+          <div class="multi-bar-val">156,200 t</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my24">2024</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf24" style="width:91%">170,100</div></div>
+          <div class="multi-bar-val">170,100 t</div>
+        </div>
+        <div class="multi-bar-row">
+          <div class="multi-bar-year my25">2025</div>
+          <div class="multi-bar-track"><div class="multi-bar-fill mf25" style="width:100%">186,400</div></div>
+          <div class="multi-bar-val">186,400 t</div>
+        </div>
+      </div>
+      <div class="bar-legend">
+        <span><span class="legend-dot" style="background:#94A3B8; opacity:0.7"></span>2022</span>
+        <span><span class="legend-dot" style="background:#A78BFA; opacity:0.8"></span>2023</span>
+        <span><span class="legend-dot" style="background:#38BDF8; opacity:0.9"></span>2024</span>
+        <span><span class="legend-dot" style="background:#10B981"></span>2025</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Revenue Comparison (Q2)</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Revenue Stream</th>
+            <th><span class="year-tag y22">Q2 2022</span></th>
+            <th><span class="year-tag y23">Q2 2023</span></th>
+            <th><span class="year-tag y24">Q2 2024</span></th>
+            <th><span class="year-tag y25">Q2 2025</span></th>
+            <th>4-Year Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Landing Fees</td>
+            <td>$54,800,000</td>
+            <td>$64,200,000</td>
+            <td>$74,600,000</td>
+            <td class="positive">$84,200,000</td>
+            <td class="positive">+53.6%</td>
+          </tr>
+          <tr>
+            <td>Passenger Charges</td>
+            <td>$78,400,000</td>
+            <td>$94,600,000</td>
+            <td>$112,400,000</td>
+            <td class="positive">$126,800,000</td>
+            <td class="positive">+61.7%</td>
+          </tr>
+          <tr>
+            <td>Parking & Hangar</td>
+            <td>$12,200,000</td>
+            <td>$14,400,000</td>
+            <td>$16,800,000</td>
+            <td class="positive">$18,600,000</td>
+            <td class="positive">+52.5%</td>
+          </tr>
+          <tr>
+            <td>Fuel Concession</td>
+            <td>$14,800,000</td>
+            <td>$17,600,000</td>
+            <td>$20,200,000</td>
+            <td class="positive">$22,400,000</td>
+            <td class="positive">+51.4%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Total Aeronautical</td>
+            <td>$160,200,000</td>
+            <td>$190,800,000</td>
+            <td>$224,000,000</td>
+            <td class="positive">$252,000,000</td>
+            <td class="positive">+57.3%</td>
+          </tr>
+          <tr>
+            <td>Retail & Duty Free</td>
+            <td>$62,400,000</td>
+            <td>$78,800,000</td>
+            <td>$96,200,000</td>
+            <td class="positive">$112,400,000</td>
+            <td class="positive">+80.1%</td>
+          </tr>
+          <tr>
+            <td>Food & Beverage</td>
+            <td>$28,600,000</td>
+            <td>$34,200,000</td>
+            <td>$41,800,000</td>
+            <td class="positive">$48,600,000</td>
+            <td class="positive">+69.9%</td>
+          </tr>
+          <tr>
+            <td>Car Parking</td>
+            <td>$21,400,000</td>
+            <td>$24,800,000</td>
+            <td>$28,600,000</td>
+            <td class="positive">$32,200,000</td>
+            <td class="positive">+50.5%</td>
+          </tr>
+          <tr>
+            <td>Lounge & VIP</td>
+            <td>$6,200,000</td>
+            <td>$8,800,000</td>
+            <td>$11,400,000</td>
+            <td class="positive">$14,800,000</td>
+            <td class="positive">+138.7%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Total Commercial</td>
+            <td>$118,600,000</td>
+            <td>$146,600,000</td>
+            <td>$178,000,000</td>
+            <td class="positive">$208,000,000</td>
+            <td class="positive">+75.4%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Grand Total Revenue</td>
+            <td>$278,800,000</td>
+            <td>$337,400,000</td>
+            <td>$402,000,000</td>
+            <td class="positive">$460,000,000</td>
+            <td class="positive">+65.0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Safety & Quality Trend</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th><span class="year-tag y22">Q2 2022</span></th>
+            <th><span class="year-tag y23">Q2 2023</span></th>
+            <th><span class="year-tag y24">Q2 2024</span></th>
+            <th><span class="year-tag y25">Q2 2025</span></th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Safety Incidents</td>
+            <td>14</td>
+            <td>11</td>
+            <td>7</td>
+            <td class="positive">3</td>
+            <td class="positive">−78.6%</td>
+          </tr>
+          <tr>
+            <td>Bird Strikes</td>
+            <td>28</td>
+            <td>24</td>
+            <td>18</td>
+            <td class="positive">12</td>
+            <td class="positive">−57.1%</td>
+          </tr>
+          <tr>
+            <td>Runway Incursions</td>
+            <td>3</td>
+            <td>1</td>
+            <td>0</td>
+            <td class="positive">0</td>
+            <td class="positive">−100%</td>
+          </tr>
+          <tr>
+            <td>Baggage Mishandle (per 1000)</td>
+            <td>4.2</td>
+            <td>3.4</td>
+            <td>2.4</td>
+            <td class="positive">1.8</td>
+            <td class="positive">−57.1%</td>
+          </tr>
+          <tr>
+            <td>Security Queue Avg (min)</td>
+            <td>16.8</td>
+            <td>14.2</td>
+            <td>11.4</td>
+            <td class="positive">8.2</td>
+            <td class="positive">−51.2%</td>
+          </tr>
+          <tr>
+            <td>Passenger Satisfaction</td>
+            <td>3.8 / 5</td>
+            <td>4.0 / 5</td>
+            <td>4.3 / 5</td>
+            <td class="positive">4.6 / 5</td>
+            <td class="positive">+21.1%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Per-Passenger Economics</div>
+    <div class="dual-col">
+      <div class="insight-card">
+        <h3>Revenue per Passenger</h3>
+        <div class="insight-item">
+          <span class="label">Q2 2022</span>
+          <span class="val">$29.41</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2023</span>
+          <span class="val">$29.96</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2024</span>
+          <span class="val">$30.59</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2025</span>
+          <span class="val positive">$31.04</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">4-Year Growth</span>
+          <span class="val positive">+5.5%</span>
+        </div>
+      </div>
+      <div class="insight-card">
+        <h3>Commercial Rev / Passenger</h3>
+        <div class="insight-item">
+          <span class="label">Q2 2022</span>
+          <span class="val">$12.51</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2023</span>
+          <span class="val">$13.02</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2024</span>
+          <span class="val">$13.55</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Q2 2025</span>
+          <span class="val positive">$14.03</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">4-Year Growth</span>
+          <span class="val positive">+12.2%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-footer">
+    <div class="footer-author">Writed by Michele Piazzoli</div>
+    <div>Confidential airport operations document. All figures verified by ATC and ground operations. All monetary values in USD.</div>
+  </div>
+
+</div>
+</body>
+</html>
