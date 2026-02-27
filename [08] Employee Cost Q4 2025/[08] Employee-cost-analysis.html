@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Cost Analysis — Q4 2024 vs Q4 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070B14;
+    --surface: #0E1421;
+    --surface-alt: #161E2E;
+    --border: rgba(255,255,255,0.05);
+    --text: #E2E8F0;
+    --text-muted: #64748B;
+    --accent: #E879F9;
+    --accent-light: #F0ABFC;
+    --accent-glow: rgba(232,121,249,0.12);
+    --green: #10B981;
+    --green-bg: rgba(16,185,129,0.1);
+    --red: #EF4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --amber: #F59E0B;
+    --amber-bg: rgba(245,158,11,0.1);
+    --cyan: #06B6D4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif;
+    line-height: 1.6; min-height: 100vh;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+  .report-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+  }
+
+  .report-header h1 {
+    font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+    letter-spacing: -0.5px; color: #fff;
+  }
+
+  .report-meta { text-align: right; font-size: 13px; color: var(--text-muted); }
+
+  .report-meta .badge {
+    display: inline-block; background: var(--accent-glow); color: var(--accent-light);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-bottom: 8px;
+  }
+
+  .exec-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 36px;
+  }
+
+  .exec-summary h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent-light); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .exec-summary p { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;
+  }
+
+  .kpi-card .kpi-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 10px; font-weight: 500;
+  }
+
+  .kpi-card .kpi-value {
+    font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+  }
+
+  .kpi-card .kpi-sub { font-size: 12px; color: var(--text-muted); }
+
+  .kpi-change {
+    font-size: 12px; font-weight: 500; display: inline-flex; align-items: center;
+    gap: 4px; padding: 2px 8px; border-radius: 6px;
+  }
+
+  .kpi-change.up { color: var(--green); background: var(--green-bg); }
+  .kpi-change.down { color: var(--red); background: var(--red-bg); }
+  .kpi-change.neutral { color: var(--amber); background: var(--amber-bg); }
+
+  .section { margin-bottom: 36px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600;
+    color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    background: var(--surface-alt); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); font-weight: 500; padding: 13px 14px; text-align: left;
+  }
+
+  thead th:not(:first-child) { text-align: right; }
+
+  tbody td { padding: 13px 14px; font-size: 13px; border-top: 1px solid var(--border); }
+
+  tbody td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+
+  tbody tr:hover { background: rgba(232,121,249,0.02); }
+
+  .row-highlight { font-weight: 700; color: #fff; background: var(--surface-alt); }
+  .row-highlight td { border-top: 2px solid var(--border); }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+
+  .dept-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.6px; padding: 2px 8px; border-radius: 4px;
+  }
+
+  .dept-eng { background: rgba(99,102,241,0.12); color: #818CF8; }
+  .dept-sales { background: rgba(16,185,129,0.12); color: #34D399; }
+  .dept-ops { background: rgba(245,158,11,0.12); color: #FBBF24; }
+  .dept-cs { background: rgba(6,182,212,0.12); color: #22D3EE; }
+  .dept-mktg { background: rgba(236,72,153,0.12); color: #F472B6; }
+  .dept-fin { background: rgba(139,92,246,0.12); color: #A78BFA; }
+  .dept-hr { background: rgba(251,146,60,0.12); color: #FB923C; }
+  .dept-exec { background: rgba(232,121,249,0.12); color: #F0ABFC; }
+
+  .tri-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 24px; text-align: center;
+  }
+
+  .stat-card .stat-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 8px; font-weight: 500;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700;
+    color: #fff; margin-bottom: 4px;
+  }
+
+  .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); }
+
+  .dual-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .insight-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px;
+  }
+
+  .insight-card h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--accent-light); margin-bottom: 14px; font-weight: 500;
+  }
+
+  .insight-item {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+
+  .insight-item:last-child { border-bottom: none; }
+  .insight-item .label { color: var(--text-muted); }
+  .insight-item .val { font-weight: 600; color: var(--text); }
+
+  /* COST BAR */
+  .cost-bar-wrap {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px;
+  }
+
+  .cost-bar-row { margin-bottom: 18px; }
+  .cost-bar-row:last-child { margin-bottom: 0; }
+
+  .cost-bar-header {
+    display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;
+  }
+
+  .cost-bar-header .name { color: var(--text); font-weight: 500; }
+  .cost-bar-header .total { color: var(--text-muted); }
+
+  .cost-bar-dual {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .cost-bar-line {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .cost-bar-year {
+    width: 60px; font-size: 11px; color: var(--text-muted); font-weight: 500; flex-shrink: 0;
+  }
+
+  .cost-bar-track {
+    flex: 1; height: 22px; background: var(--surface-alt); border-radius: 5px; overflow: hidden;
+  }
+
+  .cost-bar-fill {
+    height: 100%; border-radius: 5px; display: flex; align-items: center;
+    justify-content: flex-end; padding-right: 10px; font-size: 11px; font-weight: 700; color: #fff;
+    min-width: 60px;
+  }
+
+  .cost-bar-fill.y2024 { background: linear-gradient(90deg, #6366F1, #818CF8); opacity: 0.6; }
+  .cost-bar-fill.y2025 { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+
+  .cost-bar-val {
+    width: 70px; text-align: right; font-size: 12px; font-weight: 600; color: var(--text); flex-shrink: 0;
+  }
+
+  .bar-legend {
+    display: flex; gap: 24px; margin-top: 20px; font-size: 12px; color: var(--text-muted);
+  }
+
+  .legend-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+    margin-right: 6px; vertical-align: middle;
+  }
+
+  .report-footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .footer-author { font-weight: 500; color: var(--text); }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    html, body { background: var(--bg) !important; color: var(--text) !important; }
+    .page { padding: 24px 32px; max-width: 100%; }
+
+    .kpi-card, .table-wrap, .insight-card, .exec-summary,
+    .stat-card, .cost-bar-wrap {
+      background: var(--surface) !important; border-color: var(--border) !important;
+    }
+
+    .kpi-card .kpi-value, .stat-card .stat-value, .section-title, .report-header h1 { color: #fff !important; }
+
+    thead th { background: var(--surface-alt) !important; color: var(--text-muted) !important; }
+    .row-highlight { background: var(--surface-alt) !important; color: #fff !important; }
+
+    .cost-bar-track { background: var(--surface-alt) !important; }
+    .cost-bar-fill.y2024 { background: linear-gradient(90deg, #6366F1, #818CF8) !important; }
+    .cost-bar-fill.y2025 { background: linear-gradient(90deg, var(--accent), var(--accent-light)) !important; }
+
+    .dept-eng { background: rgba(99,102,241,0.12) !important; color: #818CF8 !important; }
+    .dept-sales { background: rgba(16,185,129,0.12) !important; color: #34D399 !important; }
+    .dept-ops { background: rgba(245,158,11,0.12) !important; color: #FBBF24 !important; }
+    .dept-cs { background: rgba(6,182,212,0.12) !important; color: #22D3EE !important; }
+    .dept-mktg { background: rgba(236,72,153,0.12) !important; color: #F472B6 !important; }
+    .dept-fin { background: rgba(139,92,246,0.12) !important; color: #A78BFA !important; }
+    .dept-hr { background: rgba(251,146,60,0.12) !important; color: #FB923C !important; }
+    .dept-exec { background: rgba(232,121,249,0.12) !important; color: #F0ABFC !important; }
+
+    .kpi-change.up { background: var(--green-bg) !important; color: var(--green) !important; }
+    .kpi-change.down { background: var(--red-bg) !important; color: var(--red) !important; }
+    .kpi-change.neutral { background: var(--amber-bg) !important; color: var(--amber) !important; }
+    .report-meta .badge { background: var(--accent-glow) !important; color: var(--accent-light) !important; }
+
+    .positive { color: var(--green) !important; }
+    .negative { color: var(--red) !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="report-header">
+    <h1>Employee Cost Analysis — Q4 2024 vs Q4 2025</h1>
+    <div class="report-meta">
+      <div class="badge">Confidential — HR & Finance</div>
+      <div>Prepared: January 10, 2026</div>
+      <div>Comparative Period: Q4 2024 → Q4 2025</div>
+    </div>
+  </div>
+
+  <div class="exec-summary">
+    <h2>Executive Summary</h2>
+    <p>
+      Total employee cost in Q4 2025 reached $19.42M across 428 FTEs, up from $16.84M across 396 FTEs in Q4 2024 — a 15.3% increase in absolute spend driven by headcount expansion (+8.1%) and compensation adjustments (+6.7% avg). Cost per employee rose modestly to $45,374 per quarter from $42,525, reflecting strategic investments in senior engineering and sales talent. Despite higher absolute costs, cost-to-revenue ratio improved from 34.6% to 33.0%, demonstrating that revenue growth outpaced workforce expansion. Benefits utilization increased 12.4%, with healthcare representing the largest single cost component at 18.6% of total employee cost.
+    </p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Employee Cost</div>
+      <div class="kpi-value">$19.42M</div>
+      <span class="kpi-change neutral">▲ 15.3% vs Q4 '24</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Cost / Employee</div>
+      <div class="kpi-value">$45,374</div>
+      <span class="kpi-change neutral">▲ 6.7% vs Q4 '24</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Cost-to-Revenue</div>
+      <div class="kpi-value">33.0%</div>
+      <span class="kpi-change up">▼ 1.6pp vs Q4 '24</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Headcount</div>
+      <div class="kpi-value">428</div>
+      <span class="kpi-change neutral">▲ 32 FTEs</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cost Composition Overview</div>
+    <div class="tri-col">
+      <div class="stat-card">
+        <div class="stat-label">Base Salaries</div>
+        <div class="stat-value">$13.18M</div>
+        <div class="stat-sub">67.9% of total cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Benefits & Healthcare</div>
+        <div class="stat-value">$3.61M</div>
+        <div class="stat-sub">18.6% of total cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bonuses & Commissions</div>
+        <div class="stat-value">$1.46M</div>
+        <div class="stat-sub">7.5% of total cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Equity / Stock Comp</div>
+        <div class="stat-value">$728K</div>
+        <div class="stat-sub">3.7% of total cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Payroll Taxes</div>
+        <div class="stat-value">$312K</div>
+        <div class="stat-sub">1.6% of total cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Training & Dev</div>
+        <div class="stat-value">$136K</div>
+        <div class="stat-sub">0.7% of total cost</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Department Cost Comparison — Q4 2024 vs Q4 2025</div>
+    <div class="cost-bar-wrap">
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-eng">Engineering</span></span>
+          <span class="total">+14.8%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:72%">$5.86M</div></div>
+            <div class="cost-bar-val">128 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:82%">$6.72M</div></div>
+            <div class="cost-bar-val">142 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-sales">Sales</span></span>
+          <span class="total">+18.2%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:52%">$3.94M</div></div>
+            <div class="cost-bar-val">78 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:58%">$4.66M</div></div>
+            <div class="cost-bar-val">86 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-ops">Operations</span></span>
+          <span class="total">+10.6%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:34%">$2.28M</div></div>
+            <div class="cost-bar-val">62 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:38%">$2.52M</div></div>
+            <div class="cost-bar-val">64 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-cs">Customer Success</span></span>
+          <span class="total">+14.1%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:24%">$1.70M</div></div>
+            <div class="cost-bar-val">44 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:28%">$1.94M</div></div>
+            <div class="cost-bar-val">48 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-mktg">Marketing</span></span>
+          <span class="total">+12.8%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:22%">$1.54M</div></div>
+            <div class="cost-bar-val">36 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:24%">$1.74M</div></div>
+            <div class="cost-bar-val">38 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-fin">Finance</span></span>
+          <span class="total">+5.4%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:16%">$1.16M</div></div>
+            <div class="cost-bar-val">28 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:17%">$1.22M</div></div>
+            <div class="cost-bar-val">28 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-bar-header">
+          <span class="name"><span class="dept-tag dept-hr">HR & People</span></span>
+          <span class="total">+16.2%</span>
+        </div>
+        <div class="cost-bar-dual">
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '24</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2024" style="width:10%">$0.70M</div></div>
+            <div class="cost-bar-val">20 FTE</div>
+          </div>
+          <div class="cost-bar-line">
+            <div class="cost-bar-year">Q4 '25</div>
+            <div class="cost-bar-track"><div class="cost-bar-fill y2025" style="width:12%">$0.82M</div></div>
+            <div class="cost-bar-val">22 FTE</div>
+          </div>
+        </div>
+      </div>
+      <div class="bar-legend">
+        <span><span class="legend-dot" style="background:#818CF8; opacity:0.6"></span>Q4 2024</span>
+        <span><span class="legend-dot" style="background:var(--accent-light)"></span>Q4 2025</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Per-Employee Cost Breakdown by Department</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>FTE Q4 '24</th>
+            <th>FTE Q4 '25</th>
+            <th>Cost/FTE Q4 '24</th>
+            <th>Cost/FTE Q4 '25</th>
+            <th>Δ Cost/FTE</th>
+            <th>Avg Salary Q4 '25</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dept-tag dept-eng">Engineering</span></td>
+            <td>128</td>
+            <td>142</td>
+            <td>$45,781</td>
+            <td>$47,324</td>
+            <td class="negative">+3.4%</td>
+            <td>$148,200</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-sales">Sales</span></td>
+            <td>78</td>
+            <td>86</td>
+            <td>$50,513</td>
+            <td>$54,186</td>
+            <td class="negative">+7.3%</td>
+            <td>$162,400</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-ops">Operations</span></td>
+            <td>62</td>
+            <td>64</td>
+            <td>$36,774</td>
+            <td>$39,375</td>
+            <td class="negative">+7.1%</td>
+            <td>$118,600</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-cs">Customer Success</span></td>
+            <td>44</td>
+            <td>48</td>
+            <td>$38,636</td>
+            <td>$40,417</td>
+            <td class="negative">+4.6%</td>
+            <td>$124,800</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-mktg">Marketing</span></td>
+            <td>36</td>
+            <td>38</td>
+            <td>$42,778</td>
+            <td>$45,789</td>
+            <td class="negative">+7.0%</td>
+            <td>$138,200</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-fin">Finance</span></td>
+            <td>28</td>
+            <td>28</td>
+            <td>$41,429</td>
+            <td>$43,571</td>
+            <td class="negative">+5.2%</td>
+            <td>$134,600</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-hr">HR & People</span></td>
+            <td>20</td>
+            <td>22</td>
+            <td>$35,000</td>
+            <td>$37,273</td>
+            <td class="negative">+6.5%</td>
+            <td>$112,400</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Company Average</td>
+            <td>396</td>
+            <td>428</td>
+            <td>$42,525</td>
+            <td>$45,374</td>
+            <td>+6.7%</td>
+            <td>$134,200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cost Structure Comparison</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cost Component</th>
+            <th>Q4 2024</th>
+            <th>% of Total</th>
+            <th>Q4 2025</th>
+            <th>% of Total</th>
+            <th>Δ YoY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Base Salaries</td>
+            <td>$11.48M</td>
+            <td>68.2%</td>
+            <td>$13.18M</td>
+            <td>67.9%</td>
+            <td class="negative">+14.8%</td>
+          </tr>
+          <tr>
+            <td>Benefits & Healthcare</td>
+            <td>$3.04M</td>
+            <td>18.1%</td>
+            <td>$3.61M</td>
+            <td>18.6%</td>
+            <td class="negative">+18.8%</td>
+          </tr>
+          <tr>
+            <td>Bonuses & Commissions</td>
+            <td>$1.22M</td>
+            <td>7.2%</td>
+            <td>$1.46M</td>
+            <td>7.5%</td>
+            <td class="negative">+19.7%</td>
+          </tr>
+          <tr>
+            <td>Equity / Stock Comp</td>
+            <td>$648K</td>
+            <td>3.8%</td>
+            <td>$728K</td>
+            <td>3.7%</td>
+            <td class="negative">+12.3%</td>
+          </tr>
+          <tr>
+            <td>Payroll Taxes</td>
+            <td>$276K</td>
+            <td>1.6%</td>
+            <td>$312K</td>
+            <td>1.6%</td>
+            <td class="negative">+13.0%</td>
+          </tr>
+          <tr>
+            <td>Training & Development</td>
+            <td>$118K</td>
+            <td>0.7%</td>
+            <td>$136K</td>
+            <td>0.7%</td>
+            <td class="negative">+15.3%</td>
+          </tr>
+          <tr>
+            <td>Recruiting & Onboarding</td>
+            <td>$62K</td>
+            <td>0.4%</td>
+            <td>$48K</td>
+            <td>0.2%</td>
+            <td class="positive">−22.6%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Total Employee Cost</td>
+            <td>$16.84M</td>
+            <td>100%</td>
+            <td>$19.42M</td>
+            <td>100%</td>
+            <td>+15.3%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Efficiency & ROI Metrics</div>
+    <div class="dual-col">
+      <div class="insight-card">
+        <h3>Q4 2024</h3>
+        <div class="insight-item">
+          <span class="label">Total Revenue</span>
+          <span class="val">$48,700,000</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Total Employee Cost</span>
+          <span class="val">$16,840,000</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Cost-to-Revenue Ratio</span>
+          <span class="val">34.6%</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Revenue per $1 Spent</span>
+          <span class="val">$2.89</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Revenue / Employee</span>
+          <span class="val">$122,980</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Profit / Employee</span>
+          <span class="val">$23,232</span>
+        </div>
+      </div>
+      <div class="insight-card">
+        <h3>Q4 2025</h3>
+        <div class="insight-item">
+          <span class="label">Total Revenue</span>
+          <span class="val positive">$58,900,000</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Total Employee Cost</span>
+          <span class="val">$19,420,000</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Cost-to-Revenue Ratio</span>
+          <span class="val positive">33.0%</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Revenue per $1 Spent</span>
+          <span class="val positive">$3.03</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Revenue / Employee</span>
+          <span class="val positive">$137,617</span>
+        </div>
+        <div class="insight-item">
+          <span class="label">Profit / Employee</span>
+          <span class="val positive">$30,607</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Headcount Movement — Q4 2024 → Q4 2025</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Start (Q4 '24)</th>
+            <th>New Hires</th>
+            <th>Departures</th>
+            <th>Net Change</th>
+            <th>End (Q4 '25)</th>
+            <th>Attrition %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dept-tag dept-eng">Engineering</span></td>
+            <td>128</td>
+            <td class="positive">+22</td>
+            <td class="negative">−8</td>
+            <td class="positive">+14</td>
+            <td>142</td>
+            <td>5.6%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-sales">Sales</span></td>
+            <td>78</td>
+            <td class="positive">+14</td>
+            <td class="negative">−6</td>
+            <td class="positive">+8</td>
+            <td>86</td>
+            <td>7.0%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-ops">Operations</span></td>
+            <td>62</td>
+            <td class="positive">+5</td>
+            <td class="negative">−3</td>
+            <td class="positive">+2</td>
+            <td>64</td>
+            <td>4.7%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-cs">Customer Success</span></td>
+            <td>44</td>
+            <td class="positive">+7</td>
+            <td class="negative">−3</td>
+            <td class="positive">+4</td>
+            <td>48</td>
+            <td>6.3%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-mktg">Marketing</span></td>
+            <td>36</td>
+            <td class="positive">+4</td>
+            <td class="negative">−2</td>
+            <td class="positive">+2</td>
+            <td>38</td>
+            <td>5.3%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-fin">Finance</span></td>
+            <td>28</td>
+            <td class="positive">+1</td>
+            <td class="negative">−1</td>
+            <td>0</td>
+            <td>28</td>
+            <td>3.6%</td>
+          </tr>
+          <tr>
+            <td><span class="dept-tag dept-hr">HR & People</span></td>
+            <td>20</td>
+            <td class="positive">+3</td>
+            <td class="negative">−1</td>
+            <td class="positive">+2</td>
+            <td>22</td>
+            <td>4.5%</td>
+          </tr>
+          <tr class="row-highlight">
+            <td>Company Total</td>
+            <td>396</td>
+            <td class="positive">+56</td>
+            <td class="negative">−24</td>
+            <td class="positive">+32</td>
+            <td>428</td>
+            <td>5.4%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="report-footer">
+    <div class="footer-author">Writed by Michele Piazzoli</div>
+    <div>Confidential HR & Finance document. Not for external distribution. All figures in USD.</div>
+  </div>
+
+</div>
+</body>
+</html>
